@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "z:\\game\\blobgame55mat\\blobgame55mat.csproj": {}
+    "Z:\\game\\blobgame55mat\\blobgame55mat.csproj": {}
   },
   "projects": {
-    "z:\\game\\blobgame55mat\\blobgame55mat.csproj": {
+    "Z:\\game\\blobgame55mat\\blobgame55mat.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "z:\\game\\blobgame55mat\\blobgame55mat.csproj",
+        "projectUniqueName": "Z:\\game\\blobgame55mat\\blobgame55mat.csproj",
         "projectName": "blobgame55mat",
-        "projectPath": "z:\\game\\blobgame55mat\\blobgame55mat.csproj",
+        "projectPath": "Z:\\game\\blobgame55mat\\blobgame55mat.csproj",
         "packagesPath": "C:\\Users\\jarabekl21\\.nuget\\packages\\",
-        "outputPath": "z:\\game\\blobgame55mat\\obj\\",
+        "outputPath": "Z:\\game\\blobgame55mat\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\jarabekl21\\AppData\\Roaming\\NuGet\\NuGet.Config"

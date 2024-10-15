@@ -24,3 +24,4 @@ z:\game\blobgame55mat\obj\Debug\net8.0\refint\blobgame55mat.dll
 z:\game\blobgame55mat\obj\Debug\net8.0\blobgame55mat.pdb
 z:\game\blobgame55mat\obj\Debug\net8.0\blobgame55mat.genruntimeconfig.cache
 z:\game\blobgame55mat\obj\Debug\net8.0\ref\blobgame55mat.dll
+Z:\game\blobgame55mat\bin\Debug\net8.0\Content\wooden_block.xnb
