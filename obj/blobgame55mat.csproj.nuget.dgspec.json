@@ -1,25 +1,32 @@
 {
   "format": 1,
   "restore": {
-    "Z:\\game\\blobgame55mat\\blobgame55mat.csproj": {}
+    "C:\\Users\\Jarabek\\gameformucha\\blobgame55mat\\blobgame55mat.csproj": {}
   },
   "projects": {
-    "Z:\\game\\blobgame55mat\\blobgame55mat.csproj": {
+    "C:\\Users\\Jarabek\\gameformucha\\blobgame55mat\\blobgame55mat.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "Z:\\game\\blobgame55mat\\blobgame55mat.csproj",
+        "projectUniqueName": "C:\\Users\\Jarabek\\gameformucha\\blobgame55mat\\blobgame55mat.csproj",
         "projectName": "blobgame55mat",
-        "projectPath": "Z:\\game\\blobgame55mat\\blobgame55mat.csproj",
-        "packagesPath": "C:\\Users\\jarabekl21\\.nuget\\packages\\",
-        "outputPath": "Z:\\game\\blobgame55mat\\obj\\",
+        "projectPath": "C:\\Users\\Jarabek\\gameformucha\\blobgame55mat\\blobgame55mat.csproj",
+        "packagesPath": "C:\\Users\\Jarabek\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Jarabek\\gameformucha\\blobgame55mat\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\jarabekl21\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Jarabek\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -68,7 +75,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.402/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

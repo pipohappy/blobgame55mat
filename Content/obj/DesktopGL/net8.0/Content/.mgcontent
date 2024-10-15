@@ -4,9 +4,11 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>Z:/game/blobgame55mat/Content/wooden_block.png</File>
+    <File>C:/Users/Jarabek/gameformucha/blobgame55mat/Content/panak.png</File>
+    <File>C:/Users/Jarabek/gameformucha/blobgame55mat/Content/wooden_block.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
   </DestFiles>
 </SourceFileCollection>
