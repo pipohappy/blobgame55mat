@@ -24,8 +24,11 @@ z:\game\blobgame55mat\obj\Debug\net8.0\refint\blobgame55mat.dll
 z:\game\blobgame55mat\obj\Debug\net8.0\blobgame55mat.pdb
 z:\game\blobgame55mat\obj\Debug\net8.0\blobgame55mat.genruntimeconfig.cache
 z:\game\blobgame55mat\obj\Debug\net8.0\ref\blobgame55mat.dll
+<<<<<<< Updated upstream
 Z:\game\blobgame55mat\bin\Debug\net8.0\Content\wooden_block.xnb
 C:\Users\Jarabek\gameformucha\blobgame55mat\bin\Debug\net8.0\Content\wooden_block.xnb
+=======
+>>>>>>> Stashed changes
 C:\Users\Jarabek\gameformucha\blobgame55mat\bin\Debug\net8.0\blobgame55mat.exe
 C:\Users\Jarabek\gameformucha\blobgame55mat\bin\Debug\net8.0\blobgame55mat.deps.json
 C:\Users\Jarabek\gameformucha\blobgame55mat\bin\Debug\net8.0\blobgame55mat.runtimeconfig.json
@@ -52,4 +55,7 @@ C:\Users\Jarabek\gameformucha\blobgame55mat\obj\Debug\net8.0\refint\blobgame55ma
 C:\Users\Jarabek\gameformucha\blobgame55mat\obj\Debug\net8.0\blobgame55mat.pdb
 C:\Users\Jarabek\gameformucha\blobgame55mat\obj\Debug\net8.0\blobgame55mat.genruntimeconfig.cache
 C:\Users\Jarabek\gameformucha\blobgame55mat\obj\Debug\net8.0\ref\blobgame55mat.dll
+<<<<<<< Updated upstream
 C:\Users\Jarabek\gameformucha\blobgame55mat\bin\Debug\net8.0\Content\panak.xnb
+=======
+>>>>>>> Stashed changes
