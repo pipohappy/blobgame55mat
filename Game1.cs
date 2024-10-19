@@ -1,6 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Security.Cryptography.X509Certificates;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace blobgame55mat
 {
@@ -10,25 +13,41 @@ namespace blobgame55mat
         private SpriteBatch _spriteBatch;
         private Texture2D _blockTexture;
         private Texture2D _playerTexture;
+        private Texture2D _spikesTexture;
+        private Texture2D _block2Texture;
+        private Texture2D _coinTexture;
 
         private const int TileSize = 32; // Size of the tiles
+        private int MapWidth;
+        private const int CameraWidth = 800; // Set the camera width to match the window width
+        private const int CameraHeight = 600; // Set the camera height to match the window height
+
         private Vector2 _playerPosition;
         private Vector2 _playerVelocity;
         private bool _isJumping = false;
+        // private Song _backgroundMusic; // For background music
+        // private SoundEffect _coinPickupSound; // For picking up coins
+        // private SoundEffect _deathSound; // For player death
 
-        private const int PlayerSpeed = 4;
+        private const int PlayerSpeed = 3;
         private const float JumpForce = -10f;
         private const float Gravity = 0.5f;
+        private int _coinsCollected = 0; // Count of collected coins
+        private const int TotalCoins = 3; // Total number of coins in the game
+
 
         // Extended map with holes (0 represents void), now wider
         private static readonly int[,] Tiles = {
-            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, // Ground
-            { 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Jumping platforms
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Empty space
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Ground with voids
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Empty space
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Empty space
-            { 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // Ground with voids
+            { 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, // Ground
+            { 2, 0, 0, 0, 3, 3, 0, 0, 0, 0, 4, 0, 0, 1, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 4, 0, 0, 0}, // Jumping platforms
+            { 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Empty space
+            { 2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Ground with voids
+            { 2, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Empty space
+            { 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Empty space
+            { 2, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            { 2, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            { 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            { 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         };
 
         private Vector2 _cameraPosition; // Camera position
@@ -36,7 +55,7 @@ namespace blobgame55mat
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
-            _graphics.PreferredBackBufferWidth = 800; // Set window width
+            _graphics.PreferredBackBufferWidth = 700; // Set window width
             _graphics.PreferredBackBufferHeight = 600; // Set window height
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -45,132 +64,207 @@ namespace blobgame55mat
         protected override void Initialize()
         {
             // Start the player at the bottom left corner
-             _playerPosition = new Vector2(50, TileSize * (Tiles.GetLength(0) - 2));// Start at height of the blocks
+             _playerPosition = new Vector2(50, TileSize * (Tiles.GetLength(0) - 2) - TileSize + 300); // Adjust to new tile size
             _playerVelocity = Vector2.Zero; // Initial velocity
             _cameraPosition = Vector2.Zero; // Initialize camera position
             base.Initialize();
+
+             MapWidth = TileSize * Tiles.GetLength(1);
+            //  MediaPlayer.Play(_backgroundMusic); // Start playing background music
+            //  MediaPlayer.IsRepeating = true;
         }
 
         protected override void LoadContent()
-        {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _blockTexture = Content.Load<Texture2D>("wooden_block"); // Block texture
-            _playerTexture = Content.Load<Texture2D>("panak"); // Player texture
+{
+    _spriteBatch = new SpriteBatch(GraphicsDevice);
+    _blockTexture = Content.Load<Texture2D>("wooden_block"); // Block texture
+    _playerTexture = Content.Load<Texture2D>("panak"); // Player texture
+    _spikesTexture = Content.Load<Texture2D>("spicy_spikes");
+    _block2Texture = Content.Load<Texture2D>("wallblock"); // Wall block texture
+    _coinTexture = Content.Load<Texture2D>("coinik");
 
-            // Check if textures are loaded successfully
-            if (_blockTexture == null || _playerTexture == null)
+    // Load sound effects and background music
+    // _backgroundMusic = Content.Load<Song>("background_music"); // Replace with your music file name
+    // _coinPickupSound = Content.Load<SoundEffect>("coin_pickup"); // Replace with your coin sound file name
+    // _deathSound = Content.Load<SoundEffect>("death_sound"); // Replace with your death sound file name
+
+    // Check if textures and sounds are loaded successfully
+    if (_blockTexture == null || _playerTexture == null || _block2Texture == null)
+    {
+        System.Diagnostics.Debug.WriteLine("Failed to load texture or sound.");
+    }
+}
+        protected override void Update(GameTime gameTime)
+{
+    if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
+        Keyboard.GetState().IsKeyDown(Keys.Escape))
+    {
+        Exit();
+    }
+
+    // Player movement logic (horizontal)
+    if (Keyboard.GetState().IsKeyDown(Keys.Right))
+    {
+        _playerVelocity.X = PlayerSpeed; // Move right
+    }
+    else if (Keyboard.GetState().IsKeyDown(Keys.Left))
+    {
+        _playerVelocity.X = -PlayerSpeed; // Move left
+    }
+    else
+    {
+        _playerVelocity.X = 0; // Stop horizontal movement if no key is pressed
+    }
+
+    // Jumping logic
+    if (Keyboard.GetState().IsKeyDown(Keys.Space) && !_isJumping)
+    {
+        _playerVelocity.Y = JumpForce; // Apply jump force
+        _isJumping = true; // Set jump state
+    }
+
+    // Apply gravity
+    _playerVelocity.Y += Gravity; // Apply gravity
+
+    // Create player rectangle for collision detection
+    Rectangle playerRectangle = new Rectangle(
+        (int)_playerPosition.X,
+        (int)_playerPosition.Y,
+        (int)(_blockTexture.Width * 2), // Scale the width
+        (int)(_blockTexture.Height * 2) // Scale the height
+    );
+
+    Vector2 newPlayerPosition = _playerPosition + new Vector2(_playerVelocity.X, 0);
+    Rectangle newPlayerRectangle = new Rectangle(
+        (int)newPlayerPosition.X,
+        (int)_playerPosition.Y,
+        (int)(_blockTexture.Width * 2), // Scale the width
+        (int)(_blockTexture.Height * 2) // Scale the height
+    );
+
+    for (int y = 0; y < Tiles.GetLength(0); y++)
+    {
+        for (int x = 0; x < Tiles.GetLength(1); x++)
+        {
+            if (Tiles[y, x] == 1 || Tiles[y, x] == 2) // Check for both wooden blocks and wall blocks
             {
-                System.Diagnostics.Debug.WriteLine("Failed to load texture.");
+                Rectangle blockRectangle = new Rectangle(
+                    x * TileSize,
+                    _graphics.PreferredBackBufferHeight - (y + 1) * TileSize,
+                    (int)(_blockTexture.Width * 2), // Scale the width
+                    (int)(_blockTexture.Height * 2) // Scale the height
+                );
+
+                // Handle horizontal collision
+                if (newPlayerRectangle.Intersects(blockRectangle))
+                {
+                    if (_playerVelocity.X > 0) // Moving right
+                    {
+                        _playerPosition.X = blockRectangle.Left - playerRectangle.Width; // Block right movement
+                    }
+                    else if (_playerVelocity.X < 0) // Moving left
+                    {
+                        _playerPosition.X = blockRectangle.Right; // Block left movement
+                    }
+
+                    _playerVelocity.X = 0; // Stop horizontal velocity
+                }
             }
         }
+    }
 
-        protected override void Update(GameTime gameTime)
+    // Now handle vertical collisions separately
+    newPlayerPosition = _playerPosition + new Vector2(0, _playerVelocity.Y);
+    newPlayerRectangle = new Rectangle(
+        (int)_playerPosition.X,
+        (int)newPlayerPosition.Y,
+        (int)(_blockTexture.Width * 2),
+        (int)(_blockTexture.Height * 2)
+    );
+
+    for (int y = 0; y < Tiles.GetLength(0); y++)
+    {
+        for (int x = 0; x < Tiles.GetLength(1); x++)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                Keyboard.GetState().IsKeyDown(Keys.Escape))
+            Rectangle blockRectangle = new Rectangle(
+                x * TileSize,
+                _graphics.PreferredBackBufferHeight - (y + 1) * TileSize,
+                (int)(_blockTexture.Width * 2),
+                (int)(_blockTexture.Height * 2)
+            );
+
+            // Handle collision with blocks
+            if (Tiles[y, x] == 1 || Tiles[y, x] == 2) // Wooden block or wall block
             {
-                Exit();
-            }
-
-            // Move the player
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
-            {
-                _playerPosition.X += PlayerSpeed; // Move right
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
-            {
-                _playerPosition.X -= PlayerSpeed; // Move left
-            }
-
-            // Jumping
-            if (Keyboard.GetState().IsKeyDown(Keys.Space) && !_isJumping)
-            {
-                _playerVelocity.Y = JumpForce; // Apply jump force
-                _isJumping = true; // Set jump state
-            }
-
-            // Apply gravity
-            _playerVelocity.Y += Gravity; // Apply gravity
-
-            // Update player position
-            _playerPosition += _playerVelocity;
-
-            // Camera only follows player horizontally
-            _cameraPosition.X = _playerPosition.X - _graphics.PreferredBackBufferWidth / 2 + TileSize / 2; // Center the camera horizontally
-            _cameraPosition.Y = 0; // Keep the camera's vertical position constant
-
-            // Simple collision detection with the ground and platforms
-            for (int y = 0; y < Tiles.GetLength(0); y++)
-            {
-                for (int x = 0; x < Tiles.GetLength(1); x++)
+                if (newPlayerRectangle.Intersects(blockRectangle))
                 {
-                    if (Tiles[y, x] == 1) // Only check if the tile is a block
+                    if (_playerVelocity.Y > 0) // Falling
                     {
-                        // Define the block rectangle with potential borders
-                        Rectangle blockRectangle = new Rectangle(
-                            x * TileSize,
-                            _graphics.PreferredBackBufferHeight - (y + 1) * TileSize,
-                            TileSize,
-                            TileSize);
-
-                        Rectangle playerRectangle = new Rectangle(
-                            (int)_playerPosition.X,
-                            (int)_playerPosition.Y,
-                            TileSize, // Player size matches block size
-                            TileSize); // Player size matches block size
-
-                        // Check for intersection between the player and block
-                        if (playerRectangle.Intersects(blockRectangle))
-                        {
-                            // Adjust the player's position if colliding with blocks
-                            if (_playerVelocity.Y > 0) // Falling
-                            {
-                                _playerPosition.Y = blockRectangle.Top - playerRectangle.Height; // Place player on top
-                                _playerVelocity.Y = 0; // Reset vertical velocity
-                                _isJumping = false; // Reset jump state
-                            }
-                            else if (_playerVelocity.Y < 0) // Jumping up
-                            {
-                                _playerPosition.Y = blockRectangle.Bottom; // Adjust position if jumping up
-                                _playerVelocity.Y = 0; // Reset vertical velocity
-                            }
-
-                            // Optional: Handle horizontal collisions
-                            if (_playerVelocity.X > 0) // Moving right
-                            {
-                                _playerPosition.X = blockRectangle.Left - playerRectangle.Width; // Adjust position if colliding from the left
-                            }
-                            else if (_playerVelocity.X < 0) // Moving left
-                            {
-                                _playerPosition.X = blockRectangle.Right; // Adjust position if colliding from the right
-                            }
-                        }
+                        _playerPosition.Y = blockRectangle.Top - playerRectangle.Height; // Place player on top
+                        _playerVelocity.Y = 0; // Reset vertical velocity
+                        _isJumping = false; // Reset jump state
+                    }
+                    else if (_playerVelocity.Y < 0) // Jumping up
+                    {
+                        _playerPosition.Y = blockRectangle.Bottom; // Adjust position if jumping up
+                        _playerVelocity.Y = 0; // Reset vertical velocity
                     }
                 }
             }
-
-
-            // Check if the player has fallen into the void (assuming void is below the lowest block)
-            if (_playerPosition.Y > _graphics.PreferredBackBufferHeight)
+            // Handle collision with spikes
+            if (Tiles[y, x] == 3) // Spikes
             {
-                RestartGame(); // Reset the game
+                if (newPlayerRectangle.Intersects(blockRectangle))
+                {
+                    // _deathSound.Play();
+                    RestartGame(); // Kill player and respawn
+                }
             }
 
-            // Ensure the player doesn't fall below ground level
-            if (_playerPosition.Y < TileSize)
+            // Handle collision with coins
+            if (Tiles[y, x] == 4) // Coin
             {
-                _playerPosition.Y = TileSize; // Reset to ground level
-                _playerVelocity.Y = 0; // Reset vertical velocity
-                _isJumping = false; // Reset jump state
+                if (newPlayerRectangle.Intersects(blockRectangle))
+                {
+                    Tiles[y, x] = 0; // Remove the coin from the map
+                    _coinsCollected++; // Increment collected coins
+                    //  _coinPickupSound.Play();
+                    if (_coinsCollected >= TotalCoins)
+                    {
+                        // Show winning message (or just close the game)
+                        Exit(); // End the game or display winning message
+                    }
+                }
             }
-
-            base.Update(gameTime);
         }
+    }
 
-                        private void RestartGame()
+    _playerPosition += _playerVelocity;
+
+    // Adjust camera position based on the player's position
+    _cameraPosition.X = _playerPosition.X - CameraWidth / 2 + TileSize / 2; // Center horizontally
+    _cameraPosition.Y = _playerPosition.Y - CameraHeight / 2 + TileSize / 2; // Center vertically
+
+    // Clamp camera position to not exceed map bounds
+    if (_cameraPosition.X < 0) _cameraPosition.X = 0;
+    if (_cameraPosition.X > MapWidth - CameraWidth) _cameraPosition.X = MapWidth - CameraWidth;
+    if (_cameraPosition.Y < 0) _cameraPosition.Y = 0;
+    if (_cameraPosition.Y > (_graphics.PreferredBackBufferHeight - CameraHeight)) _cameraPosition.Y = (_graphics.PreferredBackBufferHeight - CameraHeight);
+
+    // Check for void (player falling)
+    if (_playerPosition.Y > _graphics.PreferredBackBufferHeight)
+    {
+        // _deathSound.Play();
+        RestartGame(); // Reset the game
+    }
+
+    base.Update(gameTime);
+}
+        // Define the RestartGame method
+        private void RestartGame()
         {
-            // Set the player position to a defined starting point, e.g., first platform
-            _playerPosition = new Vector2(50, TileSize * (Tiles.GetLength(0) - 2) - TileSize); // Spawn above the block
+            // Reset the player's position to a defined starting point (e.g., first platform)
+            _playerPosition = new Vector2(50, TileSize * (Tiles.GetLength(0) - 2) - TileSize + 300); // Spawn above the block
 
             // Reset the player's velocity to zero
             _playerVelocity = Vector2.Zero; // Reset velocity to ensure no unintended movement
@@ -178,40 +272,56 @@ namespace blobgame55mat
             // Reset the jump state
             _isJumping = false; // Allow jumping again
 
-            // Optionally, you might want to reset the camera position here
+            // Optionally, reset the camera position here
             _cameraPosition = Vector2.Zero; // Reset the camera position
         }
-        protected override void Draw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
 
+        // Add the Draw method here
+                protected override void Draw(GameTime gameTime)
+        {
+            // Clear the screen with a background color
+            GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin();
 
-            // Drawing tiles based on the Tiles map
+            // Loop through each tile and draw it
             for (int y = 0; y < Tiles.GetLength(0); y++)
             {
                 for (int x = 0; x < Tiles.GetLength(1); x++)
                 {
-                    if (Tiles[y, x] == 1) // Only draw blocks
+                    Vector2 blockPosition = new Vector2(
+                        x * TileSize - _cameraPosition.X,
+                        _graphics.PreferredBackBufferHeight - (y + 1) * TileSize - _cameraPosition.Y
+                    );
+
+                    // Draw blocks
+                    if (Tiles[y, x] == 1) // Wooden block
                     {
-                        // Adjust the block's position based on the camera
-                        _spriteBatch.Draw(_blockTexture, new Rectangle(
-                            (x * TileSize) - (int)_cameraPosition.X,
-                            _graphics.PreferredBackBufferHeight - (y + 1) * TileSize, // No change in Y position
-                            TileSize,
-                            TileSize), Color.White);
+                        _spriteBatch.Draw(_blockTexture, blockPosition, null, Color.White, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
+                    }
+                    else if (Tiles[y, x] == 2) // Wall block
+                    {
+                        _spriteBatch.Draw(_block2Texture, blockPosition, null, Color.White, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
+                    }
+
+                    // Draw spikes
+                    if (Tiles[y, x] == 3) // Spikes
+                    {
+                        _spriteBatch.Draw(_spikesTexture, blockPosition, null, Color.White, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
+                    }
+
+                    // Draw coins
+                    if (Tiles[y, x] == 4) // Coin
+                    {
+                        _spriteBatch.Draw(_coinTexture, blockPosition, null, Color.White, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
                     }
                 }
             }
 
             // Draw the player
-            _spriteBatch.Draw(_playerTexture, new Rectangle(
-                (int)_playerPosition.X - (int)_cameraPosition.X,
-                (int)_playerPosition.Y,
-                TileSize, // Player size matches block size
-                TileSize), // Player size matches block size
-                Color.Red); // Change color to differentiate player
+            _spriteBatch.Draw(_playerTexture, new Vector2(_playerPosition.X - _cameraPosition.X, _playerPosition.Y - _cameraPosition.Y),
+                            null, Color.White, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
 
+            // Optionally draw the coin count or any other UI elements here
             _spriteBatch.End();
             base.Draw(gameTime);
         }
