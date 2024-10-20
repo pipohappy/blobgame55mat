@@ -1,0 +1,7 @@
+Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"c:/Users/Jarabek/gameformucha/blobgame55mat/Content/coinik.png","c:/Users/Jarabek/gameformucha/blobgame55mat/Content/bin/DesktopGL/coinik.xnb","TextureProcessor","Texture2DContent",272,1109,0,0739836
+"c:/Users/Jarabek/gameformucha/blobgame55mat/Content/panak.png","c:/Users/Jarabek/gameformucha/blobgame55mat/Content/bin/DesktopGL/panak.xnb","TextureProcessor","Texture2DContent",209,1109,0,0023561
+"c:/Users/Jarabek/gameformucha/blobgame55mat/Content/song.mp3","c:/Users/Jarabek/gameformucha/blobgame55mat/Content/bin/DesktopGL/song.xnb","SongProcessor","SongContent",9516973,122,3,2491357
+"c:/Users/Jarabek/gameformucha/blobgame55mat/Content/spicy_spikes.png","c:/Users/Jarabek/gameformucha/blobgame55mat/Content/bin/DesktopGL/spicy_spikes.xnb","TextureProcessor","Texture2DContent",282,1109,0,0015517
+"c:/Users/Jarabek/gameformucha/blobgame55mat/Content/wallblock.png","c:/Users/Jarabek/gameformucha/blobgame55mat/Content/bin/DesktopGL/wallblock.xnb","TextureProcessor","Texture2DContent",162,1109,0,0012353
+"c:/Users/Jarabek/gameformucha/blobgame55mat/Content/wooden_block.png","c:/Users/Jarabek/gameformucha/blobgame55mat/Content/bin/DesktopGL/wooden_block.xnb","TextureProcessor","Texture2DContent",238,1109,0,0010496

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>c:/Users/Jarabek/gameformucha/blobgame55mat/Content/song.mp3</SourceFile>
+  <SourceTime>2024-10-20T18:00:35.704962+02:00</SourceTime>
+  <DestFile>c:/Users/Jarabek/gameformucha/blobgame55mat/Content/bin/DesktopGL/Content/song.xnb</DestFile>
+  <DestTime>2024-10-20T21:22:20.8004556+02:00</DestTime>
+  <Importer>Mp3Importer</Importer>
+  <ImporterTime>2024-08-16T19:05:56+02:00</ImporterTime>
+  <Processor>SongProcessor</Processor>
+  <ProcessorTime>2024-08-16T19:05:56+02:00</ProcessorTime>
+  <Parameters>
+    <Key>Quality</Key>
+    <Value>Best</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput>
+    <string>c:/Users/Jarabek/gameformucha/blobgame55mat/Content/bin/DesktopGL/Content/song.ogg</string>
+  </BuildOutput>
+</PipelineBuildEvent>

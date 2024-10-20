@@ -4,13 +4,15 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/Jarabek/gameformucha/blobgame55mat/Content/coinik.png</File>
-    <File>C:/Users/Jarabek/gameformucha/blobgame55mat/Content/panak.png</File>
-    <File>C:/Users/Jarabek/gameformucha/blobgame55mat/Content/spicy_spikes.png</File>
-    <File>C:/Users/Jarabek/gameformucha/blobgame55mat/Content/wallblock.png</File>
-    <File>C:/Users/Jarabek/gameformucha/blobgame55mat/Content/wooden_block.png</File>
+    <File>c:/Users/Jarabek/gameformucha/blobgame55mat/Content/coinik.png</File>
+    <File>c:/Users/Jarabek/gameformucha/blobgame55mat/Content/panak.png</File>
+    <File>c:/Users/Jarabek/gameformucha/blobgame55mat/Content/song.mp3</File>
+    <File>c:/Users/Jarabek/gameformucha/blobgame55mat/Content/spicy_spikes.png</File>
+    <File>c:/Users/Jarabek/gameformucha/blobgame55mat/Content/wallblock.png</File>
+    <File>c:/Users/Jarabek/gameformucha/blobgame55mat/Content/wooden_block.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

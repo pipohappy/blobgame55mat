@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Jarabek\\gameformucha\\blobgame55mat\\blobgame55mat.csproj": {}
+    "c:\\Users\\Jarabek\\gameformucha\\blobgame55mat\\blobgame55mat.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Jarabek\\gameformucha\\blobgame55mat\\blobgame55mat.csproj": {
+    "c:\\Users\\Jarabek\\gameformucha\\blobgame55mat\\blobgame55mat.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Jarabek\\gameformucha\\blobgame55mat\\blobgame55mat.csproj",
+        "projectUniqueName": "c:\\Users\\Jarabek\\gameformucha\\blobgame55mat\\blobgame55mat.csproj",
         "projectName": "blobgame55mat",
-        "projectPath": "C:\\Users\\Jarabek\\gameformucha\\blobgame55mat\\blobgame55mat.csproj",
+        "projectPath": "c:\\Users\\Jarabek\\gameformucha\\blobgame55mat\\blobgame55mat.csproj",
         "packagesPath": "C:\\Users\\Jarabek\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Jarabek\\gameformucha\\blobgame55mat\\obj\\",
+        "outputPath": "c:\\Users\\Jarabek\\gameformucha\\blobgame55mat\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

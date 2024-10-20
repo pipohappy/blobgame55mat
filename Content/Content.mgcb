@@ -37,6 +37,12 @@
 /processorParam:TextureFormat=Color
 /build:panak.png
 
+#begin song.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:song.mp3
+
 #begin spicy_spikes.png
 /importer:TextureImporter
 /processor:TextureProcessor

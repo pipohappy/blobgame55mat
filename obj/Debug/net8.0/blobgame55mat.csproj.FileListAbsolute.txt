@@ -59,3 +59,5 @@ C:\Users\Jarabek\gameformucha\blobgame55mat\bin\Debug\net8.0\Content\panak.xnb
 C:\Users\Jarabek\gameformucha\blobgame55mat\bin\Debug\net8.0\Content\coinik.xnb
 C:\Users\Jarabek\gameformucha\blobgame55mat\bin\Debug\net8.0\Content\spicy_spikes.xnb
 C:\Users\Jarabek\gameformucha\blobgame55mat\bin\Debug\net8.0\Content\wallblock.xnb
+C:\Users\Jarabek\gameformucha\blobgame55mat\bin\Debug\net8.0\Content\song.ogg
+C:\Users\Jarabek\gameformucha\blobgame55mat\bin\Debug\net8.0\Content\song.xnb
