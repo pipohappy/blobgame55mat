@@ -13,6 +13,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin backgroundmusic.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:backgroundmusic.mp3
+
 #begin coinik.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -25,6 +31,30 @@
 /processorParam:TextureFormat=Color
 /build:coinik.png
 
+#begin coinpick.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:coinpick.wav
+
+#begin death-sound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:death-sound.wav
+
+#begin mariosmradlavy.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:mariosmradlavy.png
+
 #begin panak.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -36,12 +66,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:panak.png
-
-#begin song.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
-/processorParam:Quality=Best
-/build:song.mp3
 
 #begin spicy_spikes.png
 /importer:TextureImporter

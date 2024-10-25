@@ -3,24 +3,11 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace blobgame55mat
 {
     public class Game1 : Game
     {
-        public class Coin
-{
-    public Vector2 Position { get; set; }
-    public bool IsCollected { get; set; }
-
-    public Coin(Vector2 position)
-    {
-        Position = position;
-        IsCollected = false;
-    }
-}
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private Texture2D _blockTexture;
@@ -38,9 +25,11 @@ namespace blobgame55mat
         private Vector2 _playerVelocity;
         private bool _isJumping = false;
         private Song _backgroundMusic; // For background music
-        private List<Coin> _coins;
+        private SoundEffect _deathsound;
+        private SoundEffect _coinpick;
+        private bool _facingRight = true;
 
-        private const int PlayerSpeed = 3;
+        private const double PlayerSpeed = 3.2;
         private const float JumpForce = -10f;
         private const float Gravity = 0.5f;
         private int _coinsCollected = 0; // Count of collected coins
@@ -89,35 +78,26 @@ namespace blobgame55mat
         protected override void LoadContent()
 {
     _spriteBatch = new SpriteBatch(GraphicsDevice);
-    _blockTexture = Content.Load<Texture2D>("wooden_block");
-    _playerTexture = Content.Load<Texture2D>("panak");
+    _blockTexture = Content.Load<Texture2D>("wooden_block"); // Block texture
+    _playerTexture = Content.Load<Texture2D>("mariosmradlavy"); // Player texture
     _spikesTexture = Content.Load<Texture2D>("spicy_spikes");
-    _block2Texture = Content.Load<Texture2D>("wallblock");
+    _block2Texture = Content.Load<Texture2D>("wallblock"); // Wall block texture
     _coinTexture = Content.Load<Texture2D>("coinik");
 
-    _backgroundMusic = Content.Load<Song>("song");
-    
-    // Initialize the coins list
-    _coins = new List<Coin>();
+    //Load sound effects and background music
+    _backgroundMusic = Content.Load<Song>("backgroundmusic"); // Replace with your music file name
+    _deathsound = Content.Load<SoundEffect>("death-sound");
+    _coinpick = Content.Load<SoundEffect>("coinpick");
 
-    // Populate the coin positions based on the Tiles array
-    for (int y = 0; y < Tiles.GetLength(0); y++)
+    // Check if textures and sounds are loaded successfully
+   if (_blockTexture == null || _playerTexture == null || _block2Texture == null || _backgroundMusic == null)
     {
-        for (int x = 0; x < Tiles.GetLength(1); x++)
-        {
-            if (Tiles[y, x] == 4) // Coin
-            {
-                Vector2 coinPosition = new Vector2(x * TileSize, _graphics.PreferredBackBufferHeight - (y + 1) * TileSize);
-                _coins.Add(new Coin(coinPosition)); // Add the coin to the list
-            }
-        }
+        System.Diagnostics.Debug.WriteLine("Failed to load texture or sound.");
     }
-
-    // Play background music if loaded successfully
-    if (_backgroundMusic != null)
+    else
     {
-        MediaPlayer.Play(_backgroundMusic); 
-        MediaPlayer.IsRepeating = true; 
+        MediaPlayer.Play(_backgroundMusic); // Start playing background music
+        MediaPlayer.IsRepeating = true; // Set the music to loop
     }
 }
         protected override void Update(GameTime gameTime)
@@ -129,13 +109,15 @@ namespace blobgame55mat
     }
 
     // Player movement logic (horizontal)
-    if (Keyboard.GetState().IsKeyDown(Keys.Right))
+   if (Keyboard.GetState().IsKeyDown(Keys.Right))
     {
-        _playerVelocity.X = PlayerSpeed; // Move right
+        _playerVelocity.X = (float)PlayerSpeed; // Move right
+        _facingRight = true; // Set facing direction to right
     }
     else if (Keyboard.GetState().IsKeyDown(Keys.Left))
     {
-        _playerVelocity.X = -PlayerSpeed; // Move left
+        _playerVelocity.X = -(float)PlayerSpeed; // Move left
+        _facingRight = false; // Set facing direction to left
     }
     else
     {
@@ -242,33 +224,29 @@ namespace blobgame55mat
             {
                 if (newPlayerRectangle.Intersects(blockRectangle))
                 {
+                    _deathsound.Play();
                     RestartGame(); // Kill player and respawn
                 }
             }
 
             // Handle collision with coins
-                        if (Tiles[y, x] == 4) // Coin
-    {
-        if (newPlayerRectangle.Intersects(blockRectangle))
-        {
-            // Check if the coin is already collected
-            Coin coin = _coins.FirstOrDefault(c => c.Position == blockRectangle.Location.ToVector2());
-
-            if (coin != null && !coin.IsCollected) // Coin found and not collected yet
+            if (Tiles[y, x] == 4) // Coin
             {
-                coin.IsCollected = true; // Mark the coin as collected
-                Tiles[y, x] = 0; // Remove the coin from the map
-                _coinsCollected++; // Increment collected coins
-                if (_coinsCollected >= TotalCoins)
+                if (newPlayerRectangle.Intersects(blockRectangle))
                 {
-                    // Show winning message (or just close the game)
-                    Exit(); // End the game or display winning message
+                    Tiles[y, x] = 0; // Remove the coin from the map
+                    _coinsCollected++; // Increment collected coins
+                    _coinpick.Play();
+                    if (_coinsCollected >= TotalCoins)
+                    {
+                        // Show winning message (or just close the game)
+                        Exit(); // End the game or display winning message
+                    }
                 }
             }
         }
     }
-}
-    }
+
     _playerPosition += _playerVelocity;
 
     // Adjust camera position based on the player's position
@@ -284,13 +262,14 @@ namespace blobgame55mat
     // Check for void (player falling)
     if (_playerPosition.Y > _graphics.PreferredBackBufferHeight)
     {
+        _deathsound.Play();
         RestartGame(); // Reset the game
     }
 
     base.Update(gameTime);
 }
         // Define the RestartGame method
-        private void RestartGame()
+       private void RestartGame()
 {
     // Reset the player's position to a defined starting point (e.g., first platform)
     _playerPosition = new Vector2(50, TileSize * (Tiles.GetLength(0) - 2) - TileSize + 200); // Spawn above the block
@@ -304,77 +283,95 @@ namespace blobgame55mat
     // Optionally, reset the camera position here
     _cameraPosition = Vector2.Zero; // Reset the camera position
 
-    // Reset collected coins count
+    // Reset the coin count
     _coinsCollected = 0;
 
-    // Reset coin collection status
-    foreach (var coin in _coins)
-    {
-        coin.IsCollected = false; // Reset coin collection status
-    }
+    // Restore the original tile map to respawn the coins and blocks
+    ResetTileMap();
+}
 
-    // Remove any coins collected and reset the map
+// Method to reset the map to its original state
+private void ResetTileMap()
+{
+    // Reset the original tile map layout, especially for the coins
+    int[,] originalTiles = {
+        { 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, // Ground
+        { 2, 0, 0, 1, 0, 0, 0, 4, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 4, 0, 0, 0}, // Jumping platforms
+        { 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Empty space
+        { 2, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Ground with voids
+        { 2, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Empty space
+        { 2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Empty space
+        { 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 1, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        { 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        { 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        { 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        { 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        { 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        { 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    };
+
+    // Replace the current map with the original map
     for (int y = 0; y < Tiles.GetLength(0); y++)
     {
         for (int x = 0; x < Tiles.GetLength(1); x++)
         {
-            if (Tiles[y, x] == 4) // Coin
-            {
-                // Reset the tile back to its original state (coin)
-                Tiles[y, x] = 4; // This puts the coin back in the tile layout
-            }
+            Tiles[y, x] = originalTiles[y, x];
         }
     }
 }
         // Add the Draw method here
-                        protected override void Draw(GameTime gameTime)
-{
-    GraphicsDevice.Clear(Color.CornflowerBlue);
-    _spriteBatch.Begin();
-
-    // Loop through each tile and draw it
-    for (int y = 0; y < Tiles.GetLength(0); y++)
-    {
-        for (int x = 0; x < Tiles.GetLength(1); x++)
+                protected override void Draw(GameTime gameTime)
         {
-            Vector2 blockPosition = new Vector2(
-                x * TileSize - _cameraPosition.X,
-                _graphics.PreferredBackBufferHeight - (y + 1) * TileSize - _cameraPosition.Y
-            );
+            // Clear the screen with a background color
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+            _spriteBatch.Begin();
 
-            // Draw blocks
-            if (Tiles[y, x] == 1)
+            // Loop through each tile and draw it
+            for (int y = 0; y < Tiles.GetLength(0); y++)
             {
-                _spriteBatch.Draw(_blockTexture, blockPosition, null, Color.White, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
-            }
-            else if (Tiles[y, x] == 2)
-            {
-                _spriteBatch.Draw(_block2Texture, blockPosition, null, Color.White, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
+                for (int x = 0; x < Tiles.GetLength(1); x++)
+                {
+                    Vector2 blockPosition = new Vector2(
+                        x * TileSize - _cameraPosition.X,
+                        _graphics.PreferredBackBufferHeight - (y + 1) * TileSize - _cameraPosition.Y
+                    );
+
+                    // Draw blocks
+                    if (Tiles[y, x] == 1) // Wooden block
+                    {
+                        _spriteBatch.Draw(_blockTexture, blockPosition, null, Color.White, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
+                    }
+                    else if (Tiles[y, x] == 2) // Wall block
+                    {
+                        _spriteBatch.Draw(_block2Texture, blockPosition, null, Color.White, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
+                    }
+
+                    // Draw spikes
+                    if (Tiles[y, x] == 3) // Spikes
+                    {
+                        _spriteBatch.Draw(_spikesTexture, blockPosition, null, Color.White, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
+                    }
+
+                    // Draw coins
+                    if (Tiles[y, x] == 4) // Coin
+                    {
+                        _spriteBatch.Draw(_coinTexture, blockPosition, null, Color.White, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
+                    }
+                }
             }
 
-            // Draw spikes
-            if (Tiles[y, x] == 3)
-            {
-                _spriteBatch.Draw(_spikesTexture, blockPosition, null, Color.White, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
-            }
+            _spriteBatch.Draw(_playerTexture, 
+                new Vector2(_playerPosition.X - _cameraPosition.X, _playerPosition.Y - _cameraPosition.Y),
+                null, 
+                Color.White, 
+                0f, 
+                Vector2.Zero, 
+                2, 
+                _facingRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally, // Use _facingRight to determine the facing direction
+                0);
+                
+            _spriteBatch.End();
+            base.Draw(gameTime);
         }
-    }
-
-    // Draw the coins
-    foreach (var coin in _coins)
-    {
-        if (!coin.IsCollected) // Only draw if not collected
-        {
-            _spriteBatch.Draw(_coinTexture, coin.Position, Color.White);
-        }
-    }
-
-    // Draw the player
-    _spriteBatch.Draw(_playerTexture, new Vector2(_playerPosition.X - _cameraPosition.X, _playerPosition.Y - _cameraPosition.Y),
-                      null, Color.White, 0f, Vector2.Zero, 2, SpriteEffects.None, 0);
-
-    _spriteBatch.End();
-    base.Draw(gameTime);
-}
     }
 }
